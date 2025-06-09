@@ -12,7 +12,8 @@ import {
   createBrowserRouter,
   RouterProvider,
   Navigate,
-  Outlet
+  Outlet,
+  useNavigate
 } from 'react-router-dom';
 
 // Import context providers
@@ -47,6 +48,7 @@ const ProtectedRoute = () => {
 const DashboardLayout = () => {
   const { addWarden } = useWardens();
   const [showForm, setShowForm] = useState(false);
+  const navigate = useNavigate();
   
   const handleSubmit = async (formData) => {
     const result = await addWarden(formData);
@@ -54,17 +56,32 @@ const DashboardLayout = () => {
       setShowForm(false);
     }
   };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/');
+  };
   
   return (
     <div className="dashboard-layout">
       <div className="dashboard-header">
         <h1>Fire Warden Management System</h1>
-        <button 
-          className="add-warden-btn"
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? 'Cancel' : 'Add New Warden'}
-        </button>
+        <div className="header-buttons">
+          <button 
+            className="add-warden-btn"
+            onClick={() => setShowForm(!showForm)}
+          >
+            {showForm ? 'Cancel' : 'Add New Warden'}
+          </button>
+          <button 
+            className="logout-btn"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
       </div>
       
       {showForm && (

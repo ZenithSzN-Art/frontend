@@ -35,6 +35,8 @@ const Login = () => {
         password: formData.password
       });
       
+      // Set sessionStorage for route protection
+      sessionStorage.setItem('isAuthenticated', 'true');
       navigate('/dashboard');
     } catch (error) {
       setError(error.message || 'Failed to login');
