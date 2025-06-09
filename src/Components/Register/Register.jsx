@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { authService } from '../../services/authService';
 import './Register.css';
 
 const Register = () => {
@@ -20,7 +21,7 @@ const Register = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -38,14 +39,24 @@ const Register = () => {
       return;
     }
 
-    // In a real app, you would call an API here
-    // For now, we'll just simulate registration
-    setTimeout(() => {
-      // Simulate successful registration
-      sessionStorage.setItem('isAuthenticated', 'true');
-      navigate('/dashboard');
+    try {
+      await authService.register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        staffNumber: formData.staffNumber,
+        password: formData.password
+      });
+      
+      // Registration successful, navigate to login
+      navigate('/', { 
+        state: { message: 'Registration successful! Please log in with your credentials.' }
+      });
+    } catch (error) {
+      setError(error.message || 'Failed to register');
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
