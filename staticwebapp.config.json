@@ -1,0 +1,5 @@
+{
+  "environmentVariables": {
+    "VITE_API_URL": "https://bs3221-backend-fqdtfsgbe9dwbca6.eastus-01.azurewebsites.net/api"
+  }
+}
