@@ -49,24 +49,13 @@ const Dashboard = () => {
     setSelectedWarden(null);
   };
 
-  // Handle logout
-  const handleLogout = () => {
-    authService.logout();
-    navigate('/');
-  };
-
   // Main dashboard component render
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1>Fire Wardens Dashboard</h1>
-        <div className="header-buttons">
-          <button 
-            className="logout-button"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
+        <div className="dashboard-title">
+          <h1>🔥 Fire Wardens Dashboard</h1>
+          <p className="subtitle">Monitor and manage fire warden locations across campus</p>
         </div>
       </div>
       
@@ -90,9 +79,36 @@ const Dashboard = () => {
           ) : error ? (
             <p className="error-message">Error: {error}</p>
           ) : (
-            <div className="wardens-table-container">
+            <>
+              {wardens.length > 0 && (
+                <div className="stats-container">
+                  <div className="stat-card">
+                    <div className="stat-number">{wardens.length}</div>
+                    <div className="stat-label">Total Wardens</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-number">{new Set(wardens.map(w => w.location)).size}</div>
+                    <div className="stat-label">Locations Covered</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-number">
+                      {wardens.filter(w => {
+                        const today = new Date().toDateString();
+                        const wardenDate = new Date(w.entryDateTime).toDateString();
+                        return today === wardenDate;
+                      }).length}
+                    </div>
+                    <div className="stat-label">Active Today</div>
+                  </div>
+                </div>
+              )}
+              <div className="wardens-table-container">
               {wardens.length === 0 ? (
-                <p>No wardens registered yet.</p>
+                <div className="empty-state">
+                  <div className="empty-icon">🏢</div>
+                  <h3>No Fire Wardens Registered</h3>
+                  <p>Start by adding your first fire warden to track their campus location.</p>
+                </div>
               ) : (
                 <table className="wardens-table">
                   <thead>
@@ -130,7 +146,8 @@ const Dashboard = () => {
                   </tbody>
                 </table>
               )}
-            </div>
+              </div>
+            </>
           )}
         </>
       )}
